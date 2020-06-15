@@ -63,17 +63,21 @@ Action OnGiveNamedItemPre(int iClient, char sClassname[64], CEconItemView &pItem
 			// Value in abstractions class CCStrike15ItemDefinition regardless of the team always from default loadout.
 			int iLoadout = pDefinition.GetLoadoutSlot();
 
-			CEconItemView pItemViewBuffer = pInventory.GetItemInLoadout(iTeam, iLoadout);
-
-			// At, we make sure that the product is not exactly loaded from the inventory of the current team.
-			if(pItemViewBuffer && pItemViewBuffer.GetItemDefinition() != pDefinition)
+			// If this item can be in loadout.
+			if(iLoadout != -1)
 			{
-				// If this weapon exists in the slots of the contrary team. It can also be default equip slot from CCSInventoryManager.
-				if((pItemViewBuffer = pInventory.GetItemInLoadout(iTeam == CS_TEAM_CT ? CS_TEAM_T : CS_TEAM_CT, iLoadout)) && pItemViewBuffer.GetItemDefinition() == pDefinition)
-				{
-					pItemView = pItemViewBuffer;
+				CEconItemView pItemViewBuffer = pInventory.GetItemInLoadout(iTeam, iLoadout);
 
-					return Plugin_Changed;
+				// At, we make sure that the product is not exactly loaded from the inventory of the current team.
+				if(pItemViewBuffer && pItemViewBuffer.GetItemDefinition() != pDefinition)
+				{
+					// If this weapon exists in the slots of the contrary team. It can also be default equip slot from CCSInventoryManager.
+					if((pItemViewBuffer = pInventory.GetItemInLoadout(iTeam == CS_TEAM_CT ? CS_TEAM_T : CS_TEAM_CT, iLoadout)) && pItemViewBuffer.GetItemDefinition() == pDefinition)
+					{
+						pItemView = pItemViewBuffer;
+
+						return Plugin_Changed;
+					}
 				}
 			}
 		}
