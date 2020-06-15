@@ -39,7 +39,7 @@ public Plugin myinfo =
 	name = "Weapon Econ Team Transfer",
 	description = "Transfers econ data to weapons from another team",
 	author = "Wend4r",
-	version = "1.0"
+	version = "1.1"
 };
 
 public void OnPluginStart()
@@ -56,22 +56,25 @@ Action OnGiveNamedItemPre(int iClient, char sClassname[64], CEconItemView &pItem
 	{
 		CEconItemDefinition pDefinition = PTaH_GetItemDefinitionByName(sClassname);
 
-		CCSPlayerInventory pInventory = PTaH_GetPlayerInventory(iClient);
-
-		// Value in abstractions class CCStrike15ItemDefinition regardless of the team always from default loadout.
-		int iLoadout = pDefinition.GetLoadoutSlot();
-
-		// At, we make sure that the product is not exactly loaded from the inventory of the current team.
-		if(pInventory.GetItemInLoadout(iTeam, iLoadout).GetItemDefinition() != pDefinition)
+		if(pDefinition)
 		{
-			CEconItemView pItemViewEx = pInventory.GetItemInLoadout(iTeam == CS_TEAM_CT ? CS_TEAM_T : CS_TEAM_CT, iLoadout);
+			CCSPlayerInventory pInventory = PTaH_GetPlayerInventory(iClient);
 
-			// If this weapon exists in the slots of the contrary team. It can also be default equip slot from CCSInventoryManager.
-			if(pItemViewEx.GetItemDefinition() == pDefinition)
+			// Value in abstractions class CCStrike15ItemDefinition regardless of the team always from default loadout.
+			int iLoadout = pDefinition.GetLoadoutSlot();
+
+			CEconItemView pItemViewBuffer = pInventory.GetItemInLoadout(iTeam, iLoadout);
+
+			// At, we make sure that the product is not exactly loaded from the inventory of the current team.
+			if(pItemViewBuffer && pItemViewBuffer.GetItemDefinition() != pDefinition)
 			{
-				pItemView = pItemViewEx;
+				// If this weapon exists in the slots of the contrary team. It can also be default equip slot from CCSInventoryManager.
+				if((pItemViewBuffer = pInventory.GetItemInLoadout(iTeam == CS_TEAM_CT ? CS_TEAM_T : CS_TEAM_CT, iLoadout)) && pItemViewBuffer.GetItemDefinition() == pDefinition)
+				{
+					pItemView = pItemViewBuffer;
 
-				return Plugin_Changed;
+					return Plugin_Changed;
+				}
 			}
 		}
 	}
