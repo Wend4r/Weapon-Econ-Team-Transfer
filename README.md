@@ -1,7 +1,7 @@
 Weapon Econ Team Transfer
 =========================
 Transfers econ data to weapons from another team
-<a href="//www.youtube.com/watch?v=uZRm6Ou1wmk" target="_blank">Video demonstration</a>
+<br><a href="//www.youtube.com/watch?v=uZRm6Ou1wmk" target="_blank">Video demonstration</a>
 
 Requirements
 ------------
